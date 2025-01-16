@@ -128,7 +128,7 @@ export const Page: React.FC = () => {
     (v: Partial<ResumeConfig>) => {
       const newC = _.assign({}, config, v);
       changeConfig(newC);
-      saveToLocalStorage(query.user as string, newC);
+      //saveToLocalStorage(query.user as string, newC);
     },
     [config, lang]
   );
@@ -183,10 +183,14 @@ export const Page: React.FC = () => {
             // @ts-ignore
             const newConfig: ConfigProps = JSON.parse(reader.result);
             onThemeChange(newConfig.theme);
-            onConfigChange(_.omit(newConfig, 'theme'));
+
+            onConfigChange(
+              _.get(_.omit(newConfig, 'theme'), ['locales', lang])
+            );
           }
           message.success(intl.formatMessage({ id: '上传配置已应用' }));
         } catch (err) {
+          console.log('test pre', err.message, 'test');
           message.error(intl.formatMessage({ id: '上传文件有误，请重新上传' }));
         }
       };
